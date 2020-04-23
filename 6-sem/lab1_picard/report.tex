@@ -1,0 +1,172 @@
+\documentclass[a4paper, 14pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[russian]{babel}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{amsmath}
+\usepackage{pgfplots}
+\usepackage{url}
+\usepackage{tikz}
+\usepackage{float}
+
+\usepackage{titlesec}
+\titleformat*{\section}{\LARGE\bfseries}
+\titleformat*{\subsection}{\Large\bfseries}
+\titleformat*{\subsubsection}{\large\bfseries}
+\titleformat*{\paragraph}{\large\bfseries}
+\titleformat*{\subparagraph}{\large\bfseries}
+
+\lstset{ 
+language=c++,                
+basicstyle=\small\sffamily, 
+numbers=left,  
+numberstyle=\tiny,
+stepnumber=1, 
+numbersep=5pt,
+showspaces=false, 
+showstringspaces=false,
+showtabs=false, 
+frame=single, 
+tabsize=2,  
+captionpos=t, 
+breaklines=true, 
+breakatwhitespace=false, 
+escapeinside={\#*}{*)} 
+}
+
+\begin{document}
+
+	\textbf{Цель работы:} изучение методов решения дифференциального уравнения.\\
+	
+	
+	\section{Теоретическая часть}
+	
+	В данном разделе рассматриваются аналитический приближенный метод Пикара и численный метод Эйлера (явная и неявная схема).
+	
+	\subsection{Метод Пикара}
+	
+	$$y^{(\xi)}(x) = \eta + \int\limits_0^x f(t, y^{\xi-1}(t))dt,$$ 
+	$$y^{(\xi)} = \eta.$$
+	
+	\subsection{Явный метод Эйлера}
+	
+	$$x_i = x_{i-1} + h,$$ 
+	$$y_i = y_{i-1} + h \cdot f(x_{i-1}, y_{i-1}).$$
+	
+	\subsection{Неявный метод Эйлера}
+	
+	$$x_i = x_{i-1} + h,$$ 
+	$$y_i = y_{i-1} + h \cdot f(x_i, y_i).$$
+	
+	\section{Практическая часть}
+	
+	\textbf{Задача:} решить уравнение:
+	
+	\begin{equation*}
+ \begin{cases}
+   u’(x) = x^2 + u^2,
+   \\
+   u(0) = 0.
+ \end{cases}
+\end{equation*}
+	
+	Произведем вычисления для метода Пикара:
+
+$$y_1(x) = 0 + \int\limits_0^x f(t, y_0(t))dt, \quad y_0(x) = 0,$$ 
+$$y_1(x) = 0 + \int\limits_0^x f(t, 0)dt = \int\limits_0^x t^2 dt = {{x^3} \over {3}},$$ 
+$$y_2(x) = 0 + \int\limits_0^x f(t, {{x^3} \over {3}})dt = \int\limits_0^x (t^2 + {{x^6} \over {9}})dt = {{x^3} \over {3}} + {{x^7} \over {63}},$$ 
+$$y_3(x) = 0 + \int\limits_0^x f(t, {{x^3} \over {3}} + {{x^7} \over {63}})dt = \int\limits_0^x (t^2 + {{x^6} \over {9}} + {{2 x^{10}} \over {189}} + {{x^{14}} \over {3969}})dt = {{x^3} \over {3}} + {{x^7} \over {63}} + {{2x^{11}} \over {2079}} +  {{x^{15}} \over {59535}},$$ 
+$$y_4(x) = 0 + \int\limits_0^x f(t, {{x^3} \over {3}} + {{x^7} \over {63}} + {{x^{11}} \over {2079}} +  {{x^{15}} \over {59535}})dt = \int\limits_0^x (t^2 + ({{x^3} \over {3}} + {{x^7} \over {63}} + {{2x^{11}} \over {2079}} +  {{x^{15}} \over {59535}})^2)dt =$$ \\ $$= \int\limits_0^x (t^2 + (({{x^3} \over {3}} + {{x^7} \over {63}} )^2 + 
+2\cdot ({{x^3} \over {3}} + {{x^7} \over {63}})({{2x^{11}} \over {2079}} + {{x^{15}} \over {59535}}) + ({{2 x^{11}} \over {2079}} + {{x^{15}} \over {59535}})^2))dt$$\\ 
+$$=\int\limits_0^x (t^2 + {{x^6} \over {9}} + {{2x^{10}} \over {189}} + {{13x^{14}} \over {14553}} + {{82x^{18}} \over {1964655}} + {{662x^{22}} \over {453835305}} +
+{{4x^{26}} \over {123773265}} + {{x^{30}} \over {3544416225}})dt$$ \\
+$$= {{x^3} \over {3}}+ {{x^7} \over {63}} + {{2x^{11}} \over {2079}} + {{13x^{15}} \over {218295}} + {{82x^{19}} \over {37328445}} + {{662x^{23}} \over {10438212015}} +
+{{4x^{27}} \over {3341878155}} + {{x^{31}} \over {10987690975}}.$$ \\
+
+Произведем вычисления для неявного метода Эйлера:
+	
+$$y_{i+1} = y_{i} + h \cdot f(x_{i+1}, y_{i+1}),$$
+$$f(x_i, y_i) = {x_i}^2 + {y_i}^2,$$
+$$y_{i+1} = y_i + h({x_{i+1}}^2 + {y_{i+1}}^2),$$
+$$h{y_{i+1}}^2 - {y_{i+1}} + (y_i + h{x_{i+1}}^2) = 0,$$
+$$D = b^2 - 4ac = 1 - 4h(y_i + h(x_i+h)^2),$$
+$$y_{i+1} = {{-b \pm \sqrt D} \over {2a}} = {{1 \pm \sqrt D} \over {2h}}.$$\\
+
+	В листинге 1 представлена реализация расмотренных методов.
+	
+	\begin{lstlisting}[label=some-code,caption=Реализации трех методов решения дифференциального уравнения]
+def func(x, u):
+    return x ** 2  + u ** 2
+
+
+def picard_1(x):
+    return x ** 3 / 3
+
+
+def picard_2(x):
+    return x ** 3 / 3 * (1 + x ** 4 / 21)
+
+
+def picard_3(x):
+    return x ** 3 / 3 * (1 + (x ** 4 / 21) + (2 / 693 * x ** 8) + (1 / 19845 * x ** 12))
+
+
+def picard_4(x):
+    return x ** 3 / 3 + (x ** 7 / 63) + (2 / 2079 * x ** 11) + (13 / 218295 * x ** 15) + (82 / 37328445 * x ** 19) + \
+           (662 / 10438212015 * x ** 23) + (4 / 3341878155 * x ** 27) + (x ** 31 / 10987690975)
+
+
+def explicit_scheme(x, y, h):
+    return y + h * func(x, y)
+
+
+def implicit_scheme(x, y, h):
+    D = 1 - 4 * h * (y + h * (x + h) ** 2)
+    if D < 0:
+        return float("NaN")
+    else:
+        return (1 - sqrt(D)) / (2 * h)
+
+
+def calculate_picard(x_values, func):
+    y_values = []
+    for x_cur in x_values:
+        result = func(x_cur)
+        if result <= 10e+300:
+            y_values.append(round(result, 8))
+        else:
+            y_values.append(float('inf'))
+
+    return y_values
+
+
+def calculate_euler(step, x_end, func):
+    y_values = []
+    y_values.append(0.0)
+    for x_cur in arange(step, x_end + step, step):
+        result = func(x_cur - step, y_values[-1], step)
+        if result <= 10e+300:
+            y_values.append(result)
+        else:
+            y_values.append(float('inf'))
+
+    return y_values
+\end{lstlisting}6
+
+\newpage
+На рис. \ref{fig:res} представлен результат работы программы при шаге 0.001:
+	
+	\begin{figure}[H]
+        	\begin{center}
+        		\includegraphics[scale=0.42]{res}
+        		\caption{Результат работы программы}
+        		\label{fig:res}
+        	\end{center}
+        \end{figure}
+
+\section*{Вывод}
+
+В ходе лабораторной работы были реализованы аналитический приближенный метод Пикара и численный метод Эйлера.
+
+\end{document}
