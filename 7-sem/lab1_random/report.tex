@@ -1,0 +1,79 @@
+\documentclass[a4paper, 14pt]{article}
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english,russian]{babel}
+\usepackage[top = 2cm, bottom = 2 cm]{geometry}
+\usepackage{cmap}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{amsmath}
+\usepackage{pgfplots}
+\usepackage{url}
+\usepackage{tikz}
+\usepackage{float}
+\usepackage{multirow}
+
+\usepackage{titlesec}
+\titleformat*{\section}{\LARGE\bfseries}
+\titleformat*{\subsection}{\Large\bfseries}
+\titleformat*{\subsubsection}{\large\bfseries}
+\titleformat*{\paragraph}{\large\bfseries}
+\titleformat*{\subparagraph}{\large\bfseries}
+
+
+\begin{document}
+
+	\textbf{Цель работы:} реализовать и сравнить программный и табличный генераторы пседослучайных чисел. Для сравнения использовать свой или уже существующий критерий случайности последовательности. \\
+	
+	
+	\section*{Программный генератор}
+	
+	В качестве программного генератора был выбран линейный конгруэнтный генератор псевдослучайных чисел с заданными константами $m = 32767$, $a = 1103515245$, $b = 12345$:
+	
+$$X_{n+1} =  (aX_n + b)  \: mod  \: m$$
+	
+
+\section*{Табличный генератор}
+
+В качестве табличного генератора использована таблица некоррелированных случайных чисел из книги "Million Random Digits with 100,000 Normal Deviates". 
+
+\section*{$\chi^2$-критерий}
+
+Критерий $\chi^2$ используется для проверки нулевой гипотезы о подчинении наблюдаемой случайной величины определенному теоретическому закону распределения.
+
+Для того, чтобы найти оценку, разделим последовательность на k непересекающихся интервалов. Пусть $n_i$ - количество чисел в $i$-ом интервале, $p_i = \frac{1}{k}$ - теоретическая вероятность попадания чисел в $k$-ый интервал, $N$ - количество всех сгенерированных чисел.
+
+Вычислим экспериментальное значение $\chi^2$ по следующей формуле:
+
+        $$\chi^2 = \frac{1}{N} \sum_{i=1}^k \bigg( \frac{n_i^2}{p_i} \bigg) - N,$$
+
+Затем полученное значение сравнивается с теоретической величиной $\chi^2$, взятой из таблицы значений, откуда находится параметр $p$.
+
+$p$ - вероятность того, что экспериментальное значение $\chi^2$ будет меньше или равно теоретического.
+
+
+\section*{Результаты работы}
+
+\begin{figure}[H]
+    \includegraphics[scale=0.8]{progr}
+    \caption{Программный генератор для 10 чисел}
+    \label{fig:}
+\end{figure}
+
+\begin{figure}[H]
+    \includegraphics[scale=0.8]{table}
+    \caption{Табличный генератор для 10 чисел}
+    \label{fig:}
+\end{figure}
+
+\begin{figure}[H]
+    \includegraphics[scale=0.8]{chi2}
+    \caption{Критерий $\chi^2$  для 100 чисел}
+    \label{fig:}
+\end{figure}
+
+
+\section*{Вывод}
+В ходе выполнения лабораторной работы были реализованы программный и табличный генераторы псевдослучайных чисел.
+\end{document}
