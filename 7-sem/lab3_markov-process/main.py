@@ -22,18 +22,18 @@ def probability_increments(matrix, start_probabilities):
 
 def limit_times(matrix, limit_probabilities):
     n = len(matrix)
-    current_time = 0.0
     start_probabilities = [1.0 / n for i in range(n)]
+    current_time = 0.0
     current_probabilities = start_probabilities.copy()
-    stabilization_time = [0.0 for i in range(n)]
-    while not all(stabilization_time):
-        current_dps = probability_increments(matrix, start_probabilities)
+    limit_times = [0.0 for i in range(n)]
+    while not all(limit_times):
+        dp = probability_increments(matrix, start_probabilities)
         for i in range(n):
-            if not (stabilization_time[i] and abs(current_probabilities[i] - limit_probabilities[i]) <= EPS):
-                stabilization_time[i] = current_time
-            current_probabilities[i] += current_dps[i]
+            if not limit_times[i] and abs(current_probabilities[i] - limit_probabilities[i]) <= EPS:
+                limit_times[i] = current_time
+            current_probabilities[i] += dp[i]
             current_time += TIME_DELTA
-    return stabilization_time
+    return limit_times
 
 
 if __name__ == '__main__':
@@ -59,6 +59,8 @@ if __name__ == '__main__':
     limit_table = PrettyTable()
     limit_table.field_names = ["", "Предельные вероятности", "Время нахождения в предельных состояниях"]
     for i in range(size):
-        limit_tmp = [i + 1, round(probabilities[i], 4), round(times[i], 4)]
-        limit_table.add_row(limit_tmp)
+        tmp = [i + 1]
+        tmp.append(round(probabilities[i], 4))
+        tmp.append(round(times[i], 4))
+        limit_table.add_row(tmp)
     print(limit_table)
